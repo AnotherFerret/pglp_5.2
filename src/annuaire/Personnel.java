@@ -84,6 +84,31 @@ public class Personnel extends IsSerializable implements Groupe{
 		return this.nom + this.prenom;
 	}
 	
+	public String getName()
+	{
+		return this.nom;
+	}
+	
+	public String getPrenom()
+	{
+		return this.prenom;
+	}
+	
+	public String getDate()
+	{
+		return this.datenaissance.toString();
+	}
+	
+	public String getFonction()
+	{
+		return this.fonction;
+	}
+	
+	public String getTelephone()
+	{
+		return this.telephone.toString();
+	}
+	
 
 
 }
