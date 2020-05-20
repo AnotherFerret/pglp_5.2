@@ -108,31 +108,76 @@ public class DAOPersonnel extends DAO<Personnel> {
 		conn.close();
 		return null;
 	}
+	
 	@Override
-	public boolean update(Personnel p) throws FileNotFoundException, IOException
+	public boolean update(Personnel p) throws SQLException
 	{
-		File f = new File("bdd/personnel/" + p.getID() + ".data");
-		if(f.exists())
+		String dburl = "jdbc:derby:test;create=true";
+		Connection conn = null;
+		Properties connectionProps = new Properties();
+		
+		connectionProps.put("user", "user");
+		connectionProps.put("password", "pass");
+		try
 		{
-			ObjectOutputStream oos =  new ObjectOutputStream(new FileOutputStream(f)) ;
-			oos.writeObject(p);
-			oos.close();
-			return true;
+			conn = DriverManager.getConnection(dburl, connectionProps);
+			PreparedStatement prepare = conn.prepareStatement(
+					"UPDATE personnel SET (fonction, date, telephone) VALUES(?, ?, ?) WHERE nom = ? AND prenom = ?");
+			prepare.setString(4, p.getName());
+			prepare.setString(5, p.getPrenom());
+			prepare.setString(1, p.getFonction());
+			prepare.setString(2, p.getDate());
+			prepare.setString(3, p.getTelephone());
+			int result = prepare.executeUpdate();
+			if(result == 0)
+			{
+				System.out.print("Update failed\n");
+				conn.close();
+				return false;
+			}
 		}
-		System.out.print("entry " + f.getName() + " doesn't exist. Please use create() first." );
-		return false;
+		catch(SQLException e)
+		{
+			e.printStackTrace();
+			conn.close();
+			return false;
+		}
+		conn.close();
+		return true;
 	}
 	
 	@Override
-	public boolean delete(Personnel p)
+	public boolean delete(Personnel p) throws SQLException
 	{
-		File f = new File("bdd/personnel/" + p.getID() + ".data");
-		if(f.exists())
+		String dburl = "jdbc:derby:test;create=true";
+		Connection conn = null;
+		Properties connectionProps = new Properties();
+		
+		connectionProps.put("user", "user");
+		connectionProps.put("password", "pass");
+		try
 		{
-			f.delete();
-			return true;
+			conn = DriverManager.getConnection(dburl, connectionProps);
+			PreparedStatement prepare = conn.prepareStatement(
+					"DELETE FROM personnel WHERE nom = ? AND prenom = ?");
+			prepare.setString(1, p.getName());
+			prepare.setString(2, p.getPrenom());
+			int result = prepare.executeUpdate();
+			
+			if(result == 0)
+			{
+				System.out.print("Delete failed\n");
+				conn.close();
+				return false;
+			}
 		}
-		System.out.print("entry " + f.getName() + " doesn't exist." );
-		return false;
+		catch(SQLException e)
+		{
+			e.printStackTrace();
+			conn.close();
+			return false;
+		}
+		conn.close();
+		return true;
 	}
 }

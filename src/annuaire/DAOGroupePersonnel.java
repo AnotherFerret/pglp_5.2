@@ -28,7 +28,7 @@ public class DAOGroupePersonnel extends DAO<GroupePersonnel> {
 	}
 
 	@Override
-	public GroupePersonnel read(String id) throws IOException, ClassNotFoundException {
+	public GroupePersonnel read(String nom, String prenom) throws IOException, ClassNotFoundException {
 		FileInputStream f = new FileInputStream("bdd/gpersonnel/" + id + ".data");
 		ObjectInputStream in = new ObjectInputStream(f);
 		GroupePersonnel gp = (GroupePersonnel)in.readObject();
